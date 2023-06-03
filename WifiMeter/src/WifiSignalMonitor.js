@@ -1,7 +1,6 @@
 import React from 'react';
 import { NativeEventEmitter, NativeModules, View, Text } from 'react-native';
 import NetInfo from '@react-native-community/netinfo'
-import WifiManager from 'react-native-wifi-reborn';
 import * as Location from 'expo-location';
 
 const WifiSignalMonitor = () =>{
