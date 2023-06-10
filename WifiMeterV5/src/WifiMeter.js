@@ -21,6 +21,7 @@ const WifiMeter = () =>{
             RSSI: item.level,
             distance: computeDistance(item.frequency, item.level),
           }));
+          fetchedData.sort((a, b) => b.RSSI - a.RSSI);
           setData(fetchedData);
         } catch (error) {
           console.log('Error fetching Wi-Fi list:', error);
@@ -33,6 +34,7 @@ const WifiMeter = () =>{
     }, [permissionGranted])
     
     React.useEffect(()=>{
+      let intervalId;
       const reFetchWifiList = async () => {
         try {
           const wifiList = await WifiManager.reScanAndLoadWifiList();
@@ -41,17 +43,30 @@ const WifiMeter = () =>{
             RSSI: item.level,
             distance: computeDistance(item.frequency, item.level),
           }));
+          fetchedData.sort((a, b) => b.RSSI - a.RSSI);
+          console.log(wifiList)
           setData(fetchedData);
         } catch (error) {
           console.log('Error rescanning Wi-Fi:', error);
         }
       };
-  
-      if (permissionGranted && rescan) {
+      
+      const startInterval = () => {
         reFetchWifiList();
-        setRescan(false);
+    
+        intervalId = setInterval(() => {
+          reFetchWifiList();
+        }, 15500);
+      };
+
+      if (permissionGranted) {
+        startInterval();
       }
-    }, [rescan, permissionGranted])
+
+      return () => {
+        clearInterval(intervalId);
+      };
+    }, [permissionGranted])
 
     const RequirePermissions = async () =>{
       const granted = await PermissionsAndroid.request(
@@ -86,8 +101,6 @@ const WifiMeter = () =>{
 
     return(
       <SafeAreaView style={{flex: 1}}>
-        <Text>{permissionGranted ? "Permission Granted" : "Permission denied"}</Text>
-        <Button onPress={() => setRescan(true)} title='Skanuj' />
         <FlatList data={data} renderItem={renderWifi} keyExtractor={(item, index) => index.toString()}/>
       </SafeAreaView>  
     )

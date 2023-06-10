@@ -1,8 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native';
-import WifiMeter from './src/WifiMeter';
+import { NavigationContainer } from '@react-navigation/native';
+import MainRoute from './src/Routes/MainRoute';
 
 export default function App() {
   return (
-    <WifiMeter />
+    <NavigationContainer>
+      <MainRoute />
+    </NavigationContainer>
   );
 }
