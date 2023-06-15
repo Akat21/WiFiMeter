@@ -5,7 +5,6 @@ import WifiTile from './WifiTile';
 
 const WifiMeter = () =>{
     const [permissionGranted, setPermissionGranted] = React.useState(false)
-    const [rescan, setRescan] = React.useState(false)
     const [data, setData] = React.useState()
 
     React.useEffect(()=>{
