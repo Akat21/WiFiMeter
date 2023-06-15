@@ -3,6 +3,8 @@ import {View, Text, StyleSheet} from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import WifiManager from 'react-native-wifi-reborn';
 import { List } from "react-native-paper";
+import NetInfo from '@react-native-community/netinfo';
+import {Divider} from "react-native-paper";
 
 export default function ConnectedWifi(){
     const [data, setData] = React.useState()
@@ -14,13 +16,17 @@ export default function ConnectedWifi(){
             WifiManager.getBSSID().then(bssid => {setData(prevData => ({...prevData, BSSID: bssid}))})
             WifiManager.getFrequency().then(freq => {setData(prevData => ({...prevData, freq: freq}))})
             WifiManager.getIP().then(ip => {setData(prevData => ({...prevData, IP: ip}))})
-
+            NetInfo.fetch().then((state) => {
+                if (state.type === 'wifi') setData(prevData => ({...prevData, linkSpeed: state.details.linkSpeed}))
+            });
+            NetInfo.fetch().then((state) => {
+                if (state.type === 'wifi') setData(prevData => ({...prevData, download: state.details.rxLinkSpeed}))
+            });
+            NetInfo.fetch().then((state) => {
+                if (state.type === 'wifi') setData(prevData => ({...prevData, upload: state.details.txLinkSpeed}))
+            });
             intervalId = setInterval(() => {
-                WifiManager.getCurrentWifiSSID().then(ssid => {setData(prevData => ({...prevData, SSID: ssid}))})
                 WifiManager.getCurrentSignalStrength().then(rssi => {setData(prevData => ({...prevData, RSSI: rssi})); storeData(rssi)})
-                WifiManager.getBSSID().then(bssid => {setData(prevData => ({...prevData, BSSID: bssid}))})
-                WifiManager.getFrequency().then(freq => {setData(prevData => ({...prevData, freq: freq}))})
-                WifiManager.getIP().then(ip => {setData(prevData => ({...prevData, IP: ip}))})
             }, 15500);
         };
         startInterval()
@@ -46,13 +52,22 @@ export default function ConnectedWifi(){
     return(
         <View>
             {data && <View>
-                <Text style={styles.title}>Połączono z siecią WIFI</Text>
+                <Text style={styles.title}>Wifi Info</Text>
                 <List.Section>
                     <Element title="SSID" val={data.SSID} />
                     <Element title="BSSID" val={data.BSSID} />
                     <Element title="IP" val={data.IP} />
                     <Element title="RSSI" val={data.RSSI} />
                     <Element title="Frequency" val={data.freq} />
+                </List.Section>
+            </View>}
+            <Divider bold={true}/>
+            {data && <View>
+                <Text style={styles.title}>Wifi Speed</Text>
+                <List.Section>
+                    <Element title="Link Speed" val={data.linkSpeed} />
+                    <Element title="Transmit Speed" val={data.upload} />
+                    <Element title="Receive Speed" val={data.download} />
                 </List.Section>
             </View>}
         </View>
