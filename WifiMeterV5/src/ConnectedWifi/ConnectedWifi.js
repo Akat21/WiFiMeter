@@ -12,9 +12,14 @@ export default function ConnectedWifi(){
         let intervalId;
         const startInterval = () => {
             WifiManager.getCurrentWifiSSID().then(ssid => {setData(prevData => ({...prevData, SSID: ssid}))})
-            WifiManager.getCurrentSignalStrength().then(rssi => {setData(prevData => ({...prevData, RSSI: rssi})); storeData(rssi)})
+            WifiManager.getCurrentSignalStrength().then(rssi => {
+                                                        setData(prevData => ({...prevData, RSSI: rssi}))
+                                                        WifiManager.getFrequency().then(freq => {
+                                                            setData(prevData => ({...prevData, freq: freq}))
+                                                            setData(prevData => ({...prevData, dist: computeDistance(freq, rssi).toFixed(3)}))
+                                                        })
+                                                        storeData(rssi)})
             WifiManager.getBSSID().then(bssid => {setData(prevData => ({...prevData, BSSID: bssid}))})
-            WifiManager.getFrequency().then(freq => {setData(prevData => ({...prevData, freq: freq}))})
             WifiManager.getIP().then(ip => {setData(prevData => ({...prevData, IP: ip}))})
             NetInfo.fetch().then((state) => {
                 if (state.type === 'wifi') setData(prevData => ({...prevData, linkSpeed: state.details.linkSpeed}))
@@ -49,6 +54,12 @@ export default function ConnectedWifi(){
             </View>
         )
     }
+
+    const computeDistance = (frequency, rssi) =>{
+        const dist = (27.55 - 20 * Math.log10(frequency) + Math.abs(rssi) - 20) / 20
+        return Math.pow(10, dist) * 10
+    }
+
     return(
         <View>
             {data && <View>
@@ -58,6 +69,7 @@ export default function ConnectedWifi(){
                     <Element title="BSSID" val={data.BSSID} />
                     <Element title="IP" val={data.IP} />
                     <Element title="RSSI" val={data.RSSI} />
+                    <Element title="Distance" val={data.dist} />
                     <Element title="Frequency" val={data.freq} />
                 </List.Section>
             </View>}

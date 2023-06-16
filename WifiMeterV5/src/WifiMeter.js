@@ -89,7 +89,7 @@ const WifiMeter = () =>{
 
     const computeDistance = (frequency, rssi) =>{
         const dist = (27.55 - 20 * Math.log10(frequency) + Math.abs(rssi) - 20) / 20
-        return Math.pow(10, dist)
+        return Math.pow(10, dist) * 10
     }
     
     const renderWifi = ({item}) =>{
