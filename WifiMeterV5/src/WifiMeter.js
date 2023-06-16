@@ -43,7 +43,6 @@ const WifiMeter = () =>{
             distance: computeDistance(item.frequency, item.level),
           }));
           fetchedData.sort((a, b) => b.RSSI - a.RSSI);
-          console.log(wifiList)
           setData(fetchedData);
         } catch (error) {
           console.log('Error rescanning Wi-Fi:', error);

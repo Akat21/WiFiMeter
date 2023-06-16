@@ -29,7 +29,7 @@ export default function Statistics(){
           console.log('Error retrieving data from AsyncStorage:', error);
         }
     };
-    console.log(data)
+
     return(
         <View>
             <Text style={styles.rssiTitle}>RSSI</Text>
