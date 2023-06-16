@@ -35,13 +35,13 @@ export default function Statistics(){
             <Text style={styles.rssiTitle}>RSSI</Text>
             <View style={styles.plotContainer}>
                 <View style={{flexDirection:"row"}}>
-                    {data && <LineChart style={{ height: 200, flex:1, margin:6, marginRight:0, marginBottom:0 }} data={data} contentInset={{ top: 20, bottom: 10 }}
+                    {data && <LineChart style={{ height: 200, flex:1, margin:6, marginRight:0, marginBottom:0 }} data={data} contentInset={{ top: 20, bottom: 20 }}
                             curve={shape.curveNatural} svg={{ stroke: 'rgb(134, 65, 244)', strokeWidth:2}} >
                         <Grid />
                     </LineChart>}
                     {data && <YAxis data = {data} contentInset={{top:20, bottom:5}} numberOfTicks={5} style={styles.yAxisLabel} key={JSON.stringify(data)}/>}
                 </View>
-                <XAxis data={data} contentInset={{left: 15, right: 20, top:20}} numberOfTicks={data.length < 5 ? data.length - 1 : 5} style={styles.xAxisLabel}/>
+                <XAxis data={data} contentInset={{left: 15, right: 30, top:20}} numberOfTicks={data.length < 5 ? data.length - 1 : 5} style={styles.xAxisLabel}/>
 
             </View>
         </View>
